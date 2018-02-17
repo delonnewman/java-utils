@@ -18,6 +18,7 @@ public class IOUtils {
         StringBuilder sb = new StringBuilder();
         while (in.read(buffer) != -1) {
             sb.append(new String(buffer));
+            buffer = new byte[bufferSize];
         }
         in.close();
         return sb.toString();

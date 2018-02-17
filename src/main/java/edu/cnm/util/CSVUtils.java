@@ -152,7 +152,7 @@ public class CSVUtils {
             i++;
         }
 
-        return sb.toString();
+        return sb.toString() + "\n";
     }
 
     public static String stringify(List<List<Object>> data) {
@@ -169,7 +169,6 @@ public class CSVUtils {
         buffer.append(stringifyLine(fields));
         for (Map<String, Object> record: records) {
             buffer.append(stringifyRecord(record));
-            buffer.append("\n");
         }
         return buffer.toString();
     }

@@ -14,11 +14,27 @@ public class DBUtils {
     }
 
     public static List<Map<String, Object>> rows(Connection conn, String query, List params) throws Exception {
-        List<Map<String, Object>> result = new ArrayList<>();
-        PreparedStatement stmt;
+        List<Map<String, Object>> result;
+        PreparedStatement stmt = conn.prepareStatement(query);
 
-        LOG.log(Level.INFO, "SQL: " + query);
-        stmt = conn.prepareStatement(query);
+        try {
+            LOG.log(Level.INFO, "Fetching all rows of: " + query + " PARAMS: " + fmtParams(params));
+            result = rows(stmt, params);
+        }
+        catch (Exception e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            throw e;
+        }
+        finally {
+            stmt.close();
+        }
+
+        return result;
+    }
+
+    public static List<Map<String, Object>> rows(PreparedStatement stmt, List params) throws Exception {
+        List<Map<String, Object>> result = new ArrayList<>();
+
         if (params.size() != 0) setParameters(stmt, params);
         ResultSet rs = stmt.executeQuery();
         ResultSetMetaData meta = rs.getMetaData();
@@ -38,6 +54,25 @@ public class DBUtils {
         stmt.close();
 
         return result;
+    }
+
+    public static PreparedStatement prepareStatement(Connection conn, String query) throws Exception {
+        LOG.log(Level.INFO, "Preparing statement SQL: " + query);
+        return conn.prepareStatement(query);
+    }
+
+    public static PreparedStatement prepareStatementOrDie(Connection conn, String query) {
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = prepareStatement(conn, query);
+        }
+        catch (Exception e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            System.exit(1);
+        }
+
+        return  stmt;
     }
 
     public static PreparedStatement setParameters(PreparedStatement stmt, List params) throws Exception {
@@ -74,30 +109,48 @@ public class DBUtils {
         return firstRow(conn, query, params);
     }
 
-    public static Map<String, Object> firstRow(Connection conn, String query, List params) throws Exception {
-        Map<String, Object> row = new TreeMap<>(); // preserves order
-        PreparedStatement stmt = null;
+    private static String fmtParams(List params) {
+        StringBuffer sb = new StringBuffer();
+        for (Object param: params) {
+            sb.append(param.toString());
+        }
+        return sb.toString();
+    }
+
+    public static Map<String, Object> firstRow(Connection conn, String query, List<Object> params) throws Exception {
+        Map<String, Object> row;
+
+        PreparedStatement stmt = conn.prepareStatement(query);
 
         try {
-            stmt = conn.prepareStatement(query);
-            if (params.size() != 0) setParameters(stmt, params);
-            ResultSet rs = stmt.executeQuery();
-            ResultSetMetaData meta = rs.getMetaData();
-            List<String> fields = new ArrayList<>();
-            for (int i = 1; i <= meta.getColumnCount(); i++) {
-                fields.add(meta.getColumnName(i));
-            }
-            rs.next();
-
-            for (String field: fields) {
-                row.put(field, rs.getObject(field));
-            }
+            LOG.log(Level.INFO, "Fetching first row of: " + query + " PARAMS: " + fmtParams(params));
+            row = firstRow(stmt, params);
         }
-        catch (SQLException e) {
+        catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
+            throw e;
         }
         finally {
-            if (stmt != null) { stmt.close(); }
+            stmt.close();
+        }
+
+        return row;
+    }
+
+    public static Map<String, Object> firstRow(PreparedStatement stmt, List<Object> params) throws Exception {
+        Map<String, Object> row = new TreeMap<>(); // preserves order
+
+        if (params.size() != 0) setParameters(stmt, params);
+        ResultSet rs = stmt.executeQuery();
+        ResultSetMetaData meta = rs.getMetaData();
+        List<String> fields = new ArrayList<>();
+        for (int i = 1; i <= meta.getColumnCount(); i++) {
+            fields.add(meta.getColumnName(i));
+        }
+        rs.next();
+
+        for (String field: fields) {
+            row.put(field, rs.getObject(field));
         }
 
         return row;
