@@ -1,14 +1,13 @@
 package edu.cnm.util;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Utils {
     // Set Operations
     public static Set toSet(Collection c) {
-        Set s = new HashSet();
-        s.addAll(c);
-        return s;
+        return new HashSet(c);
     }
 
     public static Set difference(Collection a, Collection b) {
@@ -49,40 +48,38 @@ public class Utils {
     }
 
     // a relational projection
-    public static List<Map<String, Object>> selectFields(List<Map<String, Object>> records, List<String> keys) {
-        Set<String> keys_ = new TreeSet<>();
-        keys_.addAll(keys);
-        return records.stream()
-                .map(record -> {
-                    Map<String, Object> proj = new TreeMap<>();
-                    for (Map.Entry<String, Object> entry: record.entrySet()) {
-                        String key = entry.getKey();
-                        Object val = entry.getValue();
-                        if (keys_.contains(key)) {
-                            proj.put(key, val);
-                        }
-                    }
-                    return proj;
-                })
-                .collect(Collectors.toList());
+    public static Function<Map<String, Object>, Map<String, Object>> selectFields(Collection<String> keys) {
+        Set<String> keys_ = new TreeSet<>(keys);
+
+        return (Map<String, Object> record) -> {
+            Map<String, Object> proj = new TreeMap<>();
+            for (Map.Entry<String, Object> entry : record.entrySet()) {
+                String key = entry.getKey();
+                Object val = entry.getValue();
+                if (keys_.contains(key)) {
+                    proj.put(key, val);
+                }
+
+            }
+            return proj;
+        };
     }
 
     // a negated relational projection
-    public static List<Map<String, Object>> rejectFields(List<Map<String, Object>> records, List<String> keys) {
-        Set<String> keys_ = new TreeSet<>();
-        keys_.addAll(keys);
-        return records.stream()
-                .map(record -> {
-                    Map<String, Object> proj = new TreeMap<>();
-                    for (Map.Entry<String, Object> entry: record.entrySet()) {
-                        String key = entry.getKey();
-                        Object val = entry.getValue();
-                        if (!keys_.contains(key)) {
-                            proj.put(key, val);
-                        }
-                    }
-                    return proj;
-                })
-                .collect(Collectors.toList());
+    public static Function<Map<String, Object>, Map<String, Object>> rejectFields(Collection<String> keys) {
+        Set<String> keys_ = new TreeSet<>(keys);
+
+        return (Map<String, Object> record) -> {
+            Map<String, Object> proj = new TreeMap<>();
+            for (Map.Entry<String, Object> entry : record.entrySet()) {
+                String key = entry.getKey();
+                Object val = entry.getValue();
+                if (!keys_.contains(key)) {
+                    proj.put(key, val);
+                }
+
+            }
+            return proj;
+        };
     }
 }
