@@ -79,6 +79,8 @@ public class Utils {
     }
 
     // Relational operations
+    // TODO: add joins, inclusion semantics, and perhaps more projections
+
     // TODO: add a method that takes a lambda rather than a String
     public static Map<Object, List<Map<String, Object>>> groupBy(List<Map<String, Object>> records, String field) {
         Map<Object, List<Map<String, Object>>> grouped = new HashMap<>();
@@ -95,7 +97,7 @@ public class Utils {
     }
 
     // a relational projector
-    public static Function<Map<String, Object>, Map<String, Object>> selectFields(Collection<String> keys) {
+    public static Function<Map<String, Object>, Map<String, Object>> fieldSelector(Collection<String> keys) {
         Set<String> keys_ = new TreeSet<>(keys);
 
         return (Map<String, Object> record) -> {
@@ -113,7 +115,7 @@ public class Utils {
     }
 
     // a negated relational projector
-    public static Function<Map<String, Object>, Map<String, Object>> rejectFields(Collection<String> keys) {
+    public static Function<Map<String, Object>, Map<String, Object>> fieldRejector(Collection<String> keys) {
         Set<String> keys_ = new TreeSet<>(keys);
 
         return (Map<String, Object> record) -> {
@@ -130,7 +132,8 @@ public class Utils {
         };
     }
 
-    public static Function<Map<String, Object>, Map<String, Object>> mapFields(Map<String, String> map) {
+    // a relational projection
+    public static Function<Map<String, Object>, Map<String, Object>> fieldMapper(Map<String, String> map) {
         return (Map<String, Object> record) -> {
             Map<String, Object> proj = new TreeMap<>();
             for (Map.Entry<String, Object> entry : record.entrySet()) {
