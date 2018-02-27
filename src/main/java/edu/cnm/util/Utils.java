@@ -4,6 +4,16 @@ import java.util.*;
 import java.util.function.Function;
 
 public class Utils {
+    // TODO: add functional utils (including a pipeline mechanism) (see: https://swannodette.github.io/mori, https://underscore.js)
+
+    public static <T> Function<T, T> identity() {
+        return x -> x;
+    }
+
+    public static Function<Void, Object> always(Object x) {
+        return (v) -> x;
+    }
+
     // Set Operations
     public static boolean isSet(Object o) {
         if (o == null) return false;
@@ -77,6 +87,18 @@ public class Utils {
     public static Object getIn(Map m, List keys) {
         return getIn(m, keys, null);
     }
+
+    // converts nested maps into a list of maps
+    /*
+    public static List flatten(Map m) {
+        List xs = new ArrayList();
+        for (Object entry: m.entrySet()) {
+            Object value = ((Map.Entry)entry).getValue();
+            if (value instanceof Map) {
+
+            }
+        }
+    }*/
 
     // Relational operations
     // TODO: add joins, set operations, and perhaps more projections (see: https://en.wikipedia.org/wiki/Relational_algebra)
