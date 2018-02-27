@@ -2,8 +2,7 @@ package edu.cnm.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
@@ -64,5 +63,30 @@ public class DateUtils {
 
     public static String format(TemporalAccessor d) {
         return format(DateTimeFormatter.ISO_INSTANT, d);
+    }
+
+    /**
+     * Returns true for objects that include date and time information
+     * @return boolean
+     */
+    public static boolean isInstant(Object o) {
+        return o instanceof java.util.Date || o instanceof Instant || o instanceof LocalDateTime;
+    }
+
+    /**
+     * Returns true for objects that include date information
+     * @return boolean
+     */
+    public static boolean isDate(Object o) {
+        return isInstant(o) || o instanceof LocalDate;
+    }
+
+    /**
+     * Returns true for objects that include time information
+     * @param o
+     * @return
+     */
+    public static boolean isTime(Object o) {
+        return isInstant(o) || o instanceof LocalTime;
     }
 }
