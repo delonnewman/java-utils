@@ -79,7 +79,7 @@ public class Utils {
     }
 
     // Relational operations
-    // TODO: add joins, inclusion semantics, and perhaps more projections
+    // TODO: add joins, set operations, and perhaps more projections (see: https://en.wikipedia.org/wiki/Relational_algebra)
 
     // TODO: add a method that takes a lambda rather than a String
     public static Map<Object, List<Map<String, Object>>> groupBy(List<Map<String, Object>> records, String field) {
