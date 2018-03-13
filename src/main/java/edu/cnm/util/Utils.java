@@ -88,16 +88,26 @@ public class Utils {
         return getIn(m, keys, null);
     }
 
-    // converts nested maps into a list of maps
+    // converts nested maps into a list of de-nested maps
     /*
     public static List flatten(Map m) {
-        List xs = new ArrayList();
-        for (Object entry: m.entrySet()) {
-            Object value = ((Map.Entry)entry).getValue();
-            if (value instanceof Map) {
-
+        List maps = new ArrayList();
+        if (m != null && !m.isEmpty()) {
+            Map m_ = m;
+            Map newMap = new HashMap();
+            maps.add(newMap);
+            for (Object e: m_.entrySet()) {
+                Map.Entry entry = (Map.Entry) e;
+                Object val = entry.getValue();
+                if (val instanceof Map) {
+                  m_ = (Map) val;
+                }
+                else {
+                    newMap.put(entry.getKey(), val);
+                }
             }
         }
+        return maps;
     }*/
 
     // Relational operations
@@ -167,5 +177,26 @@ public class Utils {
             }
             return proj;
         };
+    }
+
+    // UUID Functions
+    public static UUID uuid() {
+        return UUID.randomUUID();
+    }
+
+    public static UUID uuid(String id) {
+        return UUID.fromString(id);
+    }
+
+    public static UUID uuid(long most, long least) {
+        return new UUID(most, least);
+    }
+
+    public static UUID nameUUID(String name) {
+        return UUID.nameUUIDFromBytes(name.getBytes());
+    }
+
+    public static UUID nameUUID(byte[] name) {
+        return UUID.nameUUIDFromBytes(name);
     }
 }
