@@ -8,8 +8,8 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
 
 public class DateUtils {
-    public static final DateFormat YYYYMMDD = new SimpleDateFormat("yyyymmdd");
-    public static final DateFormat YYMMDD   = new SimpleDateFormat("yymmdd");
+    public static final DateFormat YYYYMMDD = new SimpleDateFormat("yyyyMMdd");
+    public static final DateFormat YYMMDD   = new SimpleDateFormat("yyMMdd");
     public static final DateFormat HHMMSS   = new SimpleDateFormat("HHmmss");
     public static final DateFormat HHMM     = new SimpleDateFormat("HHmm");
 
